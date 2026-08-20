@@ -5,4 +5,6 @@ module.exports = {
   db: {
     uri:process.env.DB_URI
   },
+  jwt: process.env.JWT,
+  pass: process.env.PASS
 };
