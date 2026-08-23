@@ -1,11 +1,10 @@
 const jsonverify = require('jsonwebtoken');
 const { jwt } = require("../config");
 
-exports.userMiddlware = (req,res,next)=>{
+exports.userMiddlware = (req,res,next)=>{    
     const token = req.headers.authorization?.split(" ")[1];
     if(token){
         const decoded = jsonverify.verify(token,jwt);
-        console.log(decoded);
         req.user = decoded.userName;
         next();
     }
