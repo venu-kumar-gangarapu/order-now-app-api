@@ -3,7 +3,9 @@
 //send mail(transporter.sendMAil())
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS
@@ -15,7 +17,13 @@ const sendMail = async (to,subject,text)=>{
         from:process.env.MAIL_USER,
         to,
         subject,
-        text
+        html:  `
+        <div>
+            <h2>Welcome, ${userName}!</h2>
+            <p>Your account has been created successfully.</p>
+            <p>Thank you for joining <strong>Order Now</strong>.</p>
+        </div>
+    `
     })
 }
 
