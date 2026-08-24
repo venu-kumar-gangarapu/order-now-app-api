@@ -2,6 +2,7 @@ const Emps = require('../models/auth.model');
 const CryptoJS = require("crypto-js");
 const jwt = require('jsonwebtoken');
 const index = require('../config/index');
+const sendMail = require('../utils/mails');
 
 exports.login = async (req, res) => {
   const userName = req.body.username;
@@ -35,6 +36,7 @@ exports.register = async (req,res)=>{
     });
     try {
         const saving = await authData.save();
+        await sendMail(req.body.email,'sign up succefully','<h1>Welcome</h1>')
         res.status(200).json(saving);
         
     } catch (error) {
