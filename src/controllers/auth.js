@@ -36,7 +36,7 @@ exports.register = async (req,res)=>{
     });
     try {
         const saving = await authData.save();
-        await sendMail(req.body.email,'sign up succefully',req.body.username)
+        await sendMail(req.body.email,req.body.username)
         res.status(200).json(saving);
         
     } catch (error) {
