@@ -17,6 +17,7 @@ exports.postOrder = async (req,res)=>{
             const updatedOrder = await Orders.findOneAndUpdate(
                 { userId: user, status: 'pending' },
                 {
+                    $set: { paymentId: data.paymentId },
                     $push: { productDetails: { $each: data.productDetails } },
                     $inc: { totalAmount: data.totalAmount }
                 },
