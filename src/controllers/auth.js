@@ -29,6 +29,10 @@ exports.login = async (req, res) => {
 exports.register = async (req,res)=>{
     const passowrd = req.body.password;
     const cryptoEncrpt =CryptoJS.AES.encrypt(passowrd,index.pass).toString();
+    const findUser = await Emps.findOne({email:req.body.email});
+    if(findUser){
+      return res.status(203).send({message : "User already present",success : false});
+    }
     const authData = new Emps({
         username:req.body.username,
         email:req.body.email,
@@ -36,8 +40,8 @@ exports.register = async (req,res)=>{
     });
     try {
         const saving = await authData.save();
-        await sendMail(req.body.email,req.body.username)
-        res.status(200).json(saving);
+        //await sendMail(req.body.email,req.body.username)
+        res.status(200).json({message:"Account created succefully",success : true});
         
     } catch (error) {
         console.log(error);
