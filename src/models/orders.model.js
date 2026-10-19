@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 
 const OrdersModel = new mongoose.Schema({
     userId: String,
+    paymentId: {
+        type: String,
+        default: null
+    },
     productDetails: [{
         itemName: String,
         quantity:  Number,
