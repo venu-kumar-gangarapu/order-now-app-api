@@ -3,21 +3,21 @@ const Orders = require("../models/orders.model");
 exports.postOrder = async (req,res)=>{    
     try {
         const data = req.body;
-        const user = data.user;
+        const user = req.user || data.userId || data.user;
 
         // Reject if no paymentId provided
         if (!data.paymentId) {
             return res.status(400).send({ message: 'Payment ID is required to place an order', success: false });
         }
 
-        const existingOrder = await Orders.findOne({ userId: user, status: 'pending' });
+        // Check if an order already exists for this paymentId
+        const existingOrder = await Orders.findOne({ paymentId: data.paymentId, status: 'pending' });
 
         if (existingOrder) {
-            // User already has a pending order — push new products into it
-            const updatedOrder = await Orders.findOneAndUpdate(
-                { userId: user, status: 'pending' },
+            // Same paymentId: add/append products to this existing order
+            const updatedOrder = await Orders.findByIdAndUpdate(
+                existingOrder._id,
                 {
-                    $set: { paymentId: data.paymentId },
                     $push: { productDetails: { $each: data.productDetails } },
                     $inc: { totalAmount: data.totalAmount }
                 },
@@ -25,7 +25,7 @@ exports.postOrder = async (req,res)=>{
             );
             res.status(200).send({ message: 'Products added to existing order', order: updatedOrder });
         } else {
-            // No existing order — create a new one
+            // New paymentId: create a separate new order
             const saveOrder = await Orders.create({ ...req.body, userId: user, status: 'pending' });
             if (saveOrder) {
                 res.status(201).send({ message: 'Order in pending state', order: saveOrder });
