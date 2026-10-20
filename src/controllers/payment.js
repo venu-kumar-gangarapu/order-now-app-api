@@ -44,7 +44,7 @@ exports.acceptPayment = async (req, res) => {
         }
 
         // Find pending order matching this paymentId and user
-        const order = await Orders.findOne({ paymentId, userId, status: 'pending' });
+        const order = await Orders.findOne({ paymentId,status: 'pending' });
 
         if (!order) {
             return res.status(404).send({ message: 'No pending order found for this payment ID', success: false });
